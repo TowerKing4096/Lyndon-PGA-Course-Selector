@@ -139,7 +139,7 @@
 </head>
 <body>
   <div class="wrap">
-    <h1 id="appTitle">FUCK ME Its A Random Number Generator</h1>
+    <h1 id="appTitle">Lyndon's PGA Course Selector</h1>
     <div class="digits">
       <div class="card">
         <div class="label">Page</div>
@@ -159,7 +159,7 @@
     </div>
 
     <button id="rollBtn">Roll</button>
-    <div class="sub" id="statusLine">DO NOT PRESS THIS BUTTON - EVER</div>
+    <div class="sub" id="statusLine">Tap Roll to pick today's course</div>
   </div>
 
 <script>
@@ -176,105 +176,103 @@
   const btn = document.getElementById('rollBtn');
   const status = document.getElementById('statusLine');
 
-  // Array of 61 Official Courses (56 on Pages 1-7, 5 on Page 8)
-  const courses = [
-    // Page 1 (Items 1-8)
-    "Aronimink Golf Club",
-    "Shinnecock Hills Golf Club",
-    "Royal Birkdale Golf Club",
-    "Atlantic Beach Country Club",
-    "Bay Hill Club & Lodge",
-    "Copperhead Course (Valspar)",
-    "Detroit Golf Club",
-    "East Lake Golf Club",
-
-    // Page 2 (Items 9-16)
-    "Fields Ranch East at PGA Frisco",
-    "Payne's Valley",
-    "Pebble Beach Golf Links",
-    "Pinehurst No. 2",
-    "Riviera Country Club",
-    "Spyglass Hill Golf Course",
-    "St. George's Golf & Country Club",
-    "Torrey Pines (North/South)",
-
-    // Page 3 (Items 17-24)
-    "TPC Boston",
-    "TPC Deere Run",
-    "TPC Louisiana",
-    "TPC River Highlands",
-    "TPC San Antonio",
-    "TPC Sawgrass (Stadium Course)",
-    "TPC Scottsdale (Stadium)",
-    "TPC Southwind",
-
-    // Page 4 (Items 25-32)
-    "TPC Summerlin",
-    "TPC Twin Cities",
-    "Oakmont Country Club",
-    "Royal Portrush Golf Club",
-    "Quail Hollow Club",
-    "The Old Course at St Andrews",
-    "The Golf Club at Black Mountain",
-    "The Atlantic Club",
-
-    // Page 5 (Items 33-40)
-    "Carinthia Club",
-    "Cliffside Park",
-    "Copperhead Ridge",
-    "Echo Park Golf Club",
-    "High Highland Golf Club",
-    "Hopemont Golf Club",
-    "Katanning Golf Club",
-    "Monte Rei Golf & Country Club",
-
-    // Page 6 (Items 41-48)
-    "Mountain View Golf Club",
-    "Pearl Mountain Golf Club",
-    "Pinnacle Point",
-    "Red Rock Golf Club",
-    "Shadow Ridge Golf Club",
-    "The Conservatory",
-    "The Links at Royal St. Jude",
-    "The Oasis Golf Club",
-
-    // Page 7 (Items 49-56)
-    "The Pines at Fort Wilderness",
-    "The Summit Club",
-    "The Wilderness Golf Course",
-    "Timberline Golf Club",
-    "Valley View Golf Club",
-    "Whisper Rock Golf Club",
-    "Whispering Pines",
-    "Wildcamp Golf Club",
-
-    // Page 8 (Items 57-61: 5 18-hole courses; item 6 Top of the Rock is omitted)
-    "Willow Creek Golf Club",
-    "Wolf Creek Golf Club",
-    "Pine Valley Golf Club (2K)",
-    "Blackstone Golf Club",
-    "Crestview Country Club"
-  ];
-
-  function randInt(min, max){
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
+  // Matrix mapped page-by-page to match Xbox screen layout exactly
+  // Edit the titles inside these page arrays to match your console view
+  const courseMatrix = {
+    1: [
+      "Aronimink Golf Club",
+      "Shinnecock Hills Golf Club",
+      "Royal Birkdale Golf Club",
+      "Atlantic Beach Country Club",
+      "Bay Hill Club & Lodge",
+      "Copperhead Course (Valspar)",
+      "Detroit Golf Club",
+      "East Lake Golf Club"
+    ],
+    2: [
+      "Fields Ranch East at PGA Frisco",
+      "Payne's Valley",
+      "Pebble Beach Golf Links",
+      "Pinehurst No. 2",
+      "Riviera Country Club",
+      "Spyglass Hill Golf Course",
+      "St. George's Golf & Country Club",
+      "Torrey Pines (North/South)"
+    ],
+    3: [
+      "TPC Boston",
+      "TPC Deere Run",
+      "TPC Louisiana",
+      "TPC River Highlands",
+      "TPC San Antonio",
+      "TPC Sawgrass (Stadium Course)",
+      "TPC Scottsdale (Stadium)",
+      "TPC Southwind"
+    ],
+    4: [
+      "TPC Summerlin",
+      "TPC Twin Cities",
+      "Oakmont Country Club",
+      "Royal Portrush Golf Club",
+      "Quail Hollow Club",
+      "The Old Course at St Andrews",
+      "The Golf Club at Black Mountain",
+      "The Atlantic Club"
+    ],
+    5: [
+      "Carinthia Club",
+      "Cliffside Park",
+      "Copperhead Ridge",
+      "Echo Park Golf Club",
+      "High Highland Golf Club",
+      "Hopemont Golf Club",
+      "Katanning Golf Club",
+      "Monte Rei Golf & Country Club"
+    ],
+    6: [
+      "Mountain View Golf Club",
+      "Pearl Mountain Golf Club",
+      "Pinnacle Point",
+      "Red Rock Golf Club",
+      "Shadow Ridge Golf Club",
+      "The Conservatory",
+      "The Links at Royal St. Jude",
+      "The Oasis Golf Club"
+    ],
+    7: [
+      "The Pines at Fort Wilderness",
+      "The Summit Club",
+      "The Wilderness Golf Course",
+      "Timberline Golf Club",
+      "Valley View Golf Club",
+      "Whisper Rock Golf Club",
+      "Whispering Pines",
+      "Wildcamp Golf Club"
+    ],
+    8: [
+      "Willow Creek Golf Club",
+      "Wolf Creek Golf Club",
+      "Pine Valley Golf Club (2K)",
+      "Blackstone Golf Club",
+      "Crestview Country Club"
+    ]
+  };
 
   function roll(){
-    const page = randInt(1, 8);
-    // Page 8 limits selection to courses 1-5 to exclude the 3-hole layout at position 6
-    const maxCourse = (page === 8) ? 5 : 8;
-    const course = randInt(1, maxCourse);
-
-    const index = (page - 1) * 8 + (course - 1);
-    const selectedCourse = courses[index] || `Course ${index + 1}`;
+    const pages = Object.keys(courseMatrix);
+    const page = Math.floor(Math.random() * pages.length) + 1;
+    
+    const availableSlots = courseMatrix[page];
+    const slotIndex = Math.floor(Math.random() * availableSlots.length);
+    const slot = slotIndex + 1;
+    const selectedCourse = availableSlots[slotIndex];
 
     d1.classList.add('roll');
     d2.classList.add('roll');
     d1.textContent = page;
-    d2.textContent = course;
+    d2.textContent = slot;
     courseNameEl.textContent = selectedCourse;
-    status.textContent = `Page ${page}, Course ${course} (Item #${index + 1})`;
+    status.textContent = `Page ${page}, Course ${slot} (Slot ${slot} of ${availableSlots.length})`;
 
     setTimeout(() => {
       d1.classList.remove('roll');
