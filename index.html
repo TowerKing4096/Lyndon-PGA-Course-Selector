@@ -56,7 +56,6 @@ h1{
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 .label{font-size:0.8rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:10px;}
-.range{font-size:0.7rem;color:var(--muted);opacity:0.7;margin-bottom:14px;}
 .digit{
   font-size:5rem;font-weight:800;line-height:1;color:var(--accent);
   font-variant-numeric: tabular-nums;transition: transform 0.15s ease;
@@ -66,7 +65,7 @@ h1{
   background: var(--card);
   border: 1px solid rgba(212,255,95,0.3);
   border-radius: 16px;
-  padding: 16px 16px 20px 16px;
+  padding: 16px;
   margin-bottom: 24px;
   box-shadow: 0 8px 25px rgba(0,0,0,0.3);
 }
@@ -76,21 +75,14 @@ h1{
   aspect-ratio: 5 / 4;
   object-fit: cover;
   border-radius: 12px;
-  margin-bottom: 14px;
 }
 .course-img.show{display:block;}
-.course-title-label{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:6px;}
-.course-name{
-  font-size:1.35rem;font-weight:700;color:var(--accent);
-  min-height:1.6em;display:flex;align-items:center;justify-content:center;line-height:1.25;
-}
 button{
   background: var(--accent);color:#0b3d24;border:none;border-radius:999px;
   padding:16px 40px;font-size:1.05rem;font-weight:700;letter-spacing:0.03em;cursor:pointer;
   box-shadow: 0 8px 20px rgba(212,255,95,0.25);
 }
 button:active{transform: scale(0.97);}
-.sub{margin-top:18px;font-size:0.8rem;color:var(--muted);opacity:0.8;}
 </style>
 </head>
 <body>
@@ -104,24 +96,19 @@ button:active{transform: scale(0.97);}
   <div class="digits">
     <div class="card">
       <div class="label">Page</div>
-      <div class="range" id="pageRange">1&ndash;7</div>
       <div class="digit" id="digit1">&ndash;</div>
     </div>
     <div class="card">
       <div class="label">Course</div>
-      <div class="range" id="slotRange">1&ndash;8</div>
       <div class="digit" id="digit2">&ndash;</div>
     </div>
   </div>
 
   <div class="course-card">
     <img class="course-img" id="courseImg" alt="">
-    <div class="course-title-label">Selected Venue</div>
-    <div class="course-name" id="courseName">&mdash;</div>
   </div>
 
   <button id="rollBtn">Roll</button>
-  <div class="sub" id="statusLine">Tap Roll to pick today's course</div>
 </div>
 
 <script>
@@ -158,15 +145,10 @@ function slugify(name) {
 
 const d1 = document.getElementById('digit1');
 const d2 = document.getElementById('digit2');
-const pageRange = document.getElementById('pageRange');
-const slotRange = document.getElementById('slotRange');
-const courseNameEl = document.getElementById('courseName');
 const courseImg = document.getElementById('courseImg');
 const btn = document.getElementById('rollBtn');
-const status = document.getElementById('statusLine');
 
 const pageNumbers = Object.keys(courseMatrix).map(Number);
-pageRange.innerHTML = `1&ndash;${pageNumbers.length}`;
 
 function roll() {
   const page = pageNumbers[Math.floor(Math.random() * pageNumbers.length)];
@@ -179,8 +161,6 @@ function roll() {
   d2.classList.add('roll');
   d1.textContent = page;
   d2.textContent = slot;
-  slotRange.innerHTML = `1&ndash;${courses.length}`;
-  courseNameEl.textContent = name;
 
   // Show the matching image; hide it if the file is missing
   courseImg.classList.remove('show');
@@ -188,8 +168,6 @@ function roll() {
   courseImg.onerror = () => courseImg.classList.remove('show');
   courseImg.alt = name;
   courseImg.src = `app_images/${slugify(name)}.png`;
-
-  status.textContent = `Page ${page}, Course ${slot}`;
 
   setTimeout(() => {
     d1.classList.remove('roll');
